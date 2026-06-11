@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Blog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #f0ede8;
+    --muted: #888;
+    --accent: #c8a96e;
+    --accent2: #e8c98e;
+    --danger: #e05252;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    background: rgba(13,13,13,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .header-actions { display: flex; gap: 0.75rem; align-items: center; }
+  .btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 0.45rem 1.1rem;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 400;
+  }
+  .btn:hover { background: var(--surface2); border-color: var(--accent); color: var(--accent); }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0d0d0d;
+    font-weight: 600;
+  }
+  .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); color: #0d0d0d; }
+  .btn-danger { border-color: var(--danger); color: var(--danger); }
+  .btn-danger:hover { background: rgba(224,82,82,0.1); }
+
+  /* HERO */
+  .hero {
+    padding: 5rem 2rem 4rem;
+    max-width: 780px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em { color: var(--accent); font-style: italic; }
+  .hero p {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto 2.5rem;
+  }
+  .hero-divider {
+    width: 60px;
+    height: 1px;
+    background: var(--accent);
+    margin: 0 auto;
+    opacity: 0.4;
+  }
+
+  /* MAIN LAYOUT */
+  main { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ARTICLE GRID */
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 4rem;
+  }
+  .article-card {
+    background: var(--surface);
+    padding: 2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+    position: relative;
+  }
+  .article-card:hover { background: var(--surface2); }
+  .article-card.featured {
+    grid-column: 1 / -1;
+    min-height: 280px;
+    flex-direction: row;
+    gap: 3rem;
+    align-items: center;
+  }
+  .article-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+  .article-card h2 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+    transition: color 0.2s;
+  }
+  .article-card:hover h2 { color: var(--accent); }
+  .article-card.featured h2 { font-size: 2rem; }
+  .article-excerpt {
+    font-size: 0.9rem;
+    color: var(--muted);
+    flex: 1;
+    margin-bottom: 1.25rem;
+    line-height: 1.65;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .article-card.featured .article-excerpt { -webkit-line-clamp: 4; }
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .article-meta .dot { opacity: 0.3; }
+  .card-actions {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    display: none;
+    gap: 0.5rem;
+  }
+  .article-card:hover .card-actions { display: flex; }
+  .icon-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+  .icon-btn:hover { color: var(--danger); border-color: var(--danger); }
+  .icon-btn.edit:hover { color: var(--accent); border-color: var(--accent); }
+  .featured-content { flex: 1; }
+  .featured-number {
+    font-size: 5rem;
+    font-family: var(--font-display);
+    color: var(--border);
+    font-weight: 700;
+    line-height: 1;
+    user-select: none;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+    width: 100%;
+    display: none;
+  }
+  .empty-state h3 { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.75rem; color: var(--text); }
+
+  /* MODAL OVERLAY */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    backdrop-filter: blur(4px);
+  }
+  .overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 2.5rem;
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    color: var(--text);
+  }
+  .form-group { margin-bottom: 1.5rem; }
+  .form-group label {
+    display: block;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 300;
+    padding: 0.75rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: var(--accent); }
+  .form-group textarea { min-height: 220px; line-height: 1.7; }
+  .form-group select option { background: var(--surface); }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 2rem; }
+
+  /* ARTICLE VIEW */
+  .article-view { display: none; }
+  .article-view.open { display: block; }
+  .home-view { }
+  .home-view.hidden { display: none; }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    background: none;
+    border: none;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-bottom: 3rem;
+    padding: 0;
+    transition: color 0.2s;
+  }
+  .back-btn:hover { color: var(--accent); }
+  .article-full { max-width: 680px; margin: 0 auto; }
+  .article-full .article-tag { margin-bottom: 1rem; font-size: 0.75rem; }
+  .article-full h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+  .article-full .article-meta { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .article-body {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: rgba(240,237,232,0.85);
+    white-space: pre-wrap;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  footer span { color: var(--accent); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    color: var(--text);
+    z-index: 500;
+    transform: translateY(120%);
+    transition: transform 0.3s ease;
+    max-width: 300px;
+  }
+  .toast.show { transform: translateY(0); }
+
+  /* SEARCH */
+  .search-bar {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 300;
+    padding: 0.7rem 1rem 0.7rem 2.75rem;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 2.5rem;
+  }
+  .search-bar:focus { border-color: var(--accent); }
+  .search-wrap { position: relative; }
+  .search-icon {
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    transform: translateY(-58%);
+    color: var(--muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+  }
+
+  @media (max-width: 600px) {
+    .article-card.featured { flex-direction: column; }
+    .featured-number { display: none; }
+    header { padding: 0 1rem; }
+    main { padding: 2rem 1rem 4rem; }
+    .hero { padding: 3rem 1rem 2.5rem; }
+    .modal { padding: 1.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" onclick="showHome()">✦ My Blog</a>
+  <div class="header-actions">
+    <button class="btn btn-primary" onclick="openNewArticle()">+ New Article</button>
+  </div>
+</header>
+
+<!-- HOME VIEW -->
+<div class="home-view" id="homeView">
+  <div class="hero">
+    <p class="hero-eyebrow">Welcome to my space</p>
+    <h1>Words, <em>ideas</em>, &amp; stories.</h1>
+    <p>A personal blog where I share thoughts on things I find beautiful, curious, or worth writing about.</p>
+    <div class="hero-divider"></div>
+  </div>
+
+  <main>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-bar" type="text" placeholder="Search articles..." id="searchInput" oninput="filterArticles()">
+    </div>
+    <div class="section-label">All Articles</div>
+    <div class="articles-grid" id="articlesGrid">
+      <div class="empty-state" id="emptyState" style="display:none">
+        <h3>No articles yet</h3>
+        <p>Click <strong>+ New Article</strong> to write your first piece.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ARTICLE FULL VIEW -->
+<div class="article-view" id="articleView">
+  <main>
+    <button class="back-btn" onclick="showHome()">← Back to all articles</button>
+    <div class="article-full">
+      <div class="article-tag" id="viewTag"></div>
+      <h1 id="viewTitle"></h1>
+      <div class="article-meta">
+        <span id="viewDate"></span>
+        <span class="dot">•</span>
+        <span id="viewReadTime"></span>
+      </div>
+      <div class="article-body" id="viewBody"></div>
+    </div>
+  </main>
+</div>
+
+<!-- WRITE / EDIT MODAL -->
+<div class="overlay" id="editorOverlay">
+  <div class="modal">
+    <h2 class="modal-title" id="modalTitle">Write a new article</h2>
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" id="inputTitle" placeholder="Your article headline...">
+    </div>
+    <div class="form-group">
+      <label>Category</label>
+      <select id="inputTag">
+        <option value="Thoughts">Thoughts</option>
+        <option value="Travel">Travel</option>
+        <option value="Tech">Tech</option>
+        <option value="Life">Life</option>
+        <option value="Books">Books</option>
+        <option value="Food">Food</option>
+        <option value="Health">Health</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Short description (shown on card)</label>
+      <input type="text" id="inputExcerpt" placeholder="A one-line summary...">
+    </div>
+    <div class="form-group">
+      <label>Article content</label>
+      <textarea id="inputBody" placeholder="Write your article here. Press Enter for new paragraphs..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeEditor()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveArticle()">Publish →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<footer>
+  Made with ❤️ — <span>My Blog</span> &copy; <span id="yr"></span>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  const STORAGE_KEY = 'myblog_articles_v1';
+  let articles = [];
+  let editingId = null;
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      articles = raw ? JSON.parse(raw) : [];
+    } catch(e) { articles = []; }
+    if (articles.length === 0) seedDefaults();
+    renderGrid();
+  }
+
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(articles));
+  }
+
+  function seedDefaults() {
+    articles = [
+      {
+        id: Date.now() + 1,
+        title: "Why I started this blog",
+        tag: "Thoughts",
+        excerpt: "There's something deeply personal about putting words on a page for anyone to read.",
+        body: "There's something deeply personal about putting words on a page for anyone to read.\n\nI've kept journals for years — private little notebooks stuffed with half-formed thoughts, clumsy metaphors, and things I was too nervous to say out loud. Starting a public blog felt like opening a window in a room I'd kept to myself.\n\nThe reason I finally did it? A friend told me: the things you assume everyone knows are usually the things only you've figured out. So here I am. Writing about whatever moves me, whenever it moves me.\n\nI hope something here resonates with you.",
+        date: new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'}),
+        ts: Date.now() + 1
+      },
+      {
+        id: Date.now() + 2,
+        title: "The quiet joy of slow mornings",
+        tag: "Life",
+        excerpt: "Before the notifications, before the inbox — there's a window of time that belongs entirely to you.",
+        body: "Before the notifications, before the inbox — there's a window of time that belongs entirely to you.\n\nI've become protective of my mornings in a way I never was before. No phone for the first hour. A cup of coffee made slowly, deliberately. Maybe some music, maybe silence.\n\nIt sounds small. It isn't.\n\nThere's a kind of clarity that exists only before the world starts asking things of you. Ideas surface. Problems untangle. You remember what you actually care about.\n\nIf your mornings feel rushed, I'd gently suggest: what would it take to carve out just twenty quiet minutes? It might change your entire day.",
+        date: new Date(Date.now() - 86400000 * 3).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'}),
+        ts: Date.now() + 2
+      }
+    ];
+    save();
+  }
+
+  function readTime(body) {
+    const words = body.trim().split(/\s+/).length;
+    const mins = Math.max(1, Math.round(words / 200));
+    return mins + ' min read';
+  }
+
+  function renderGrid(filtered) {
+    const grid = document.getElementById('articlesGrid');
+    const list = filtered !== undefined ? filtered : articles;
+    const sorted = [...list].sort((a,b) => b.ts - a.ts);
+
+    grid.innerHTML = '';
+
+    if (sorted.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.style.display = 'block';
+      empty.innerHTML = filtered !== undefined
+        ? '<h3>No results found</h3><p>Try a different search term.</p>'
+        : '<h3>No articles yet</h3><p>Click <strong>+ New Article</strong> to write your first piece.</p>';
+      grid.appendChild(empty);
+      return;
+    }
+
+    sorted.forEach((art, i) => {
+      const card = document.createElement('div');
+      card.className = 'article-card' + (i === 0 ? ' featured' : '');
+      if (i === 0) {
+        card.innerHTML = `
+          <div class="featured-number">01</div>
+          <div class="featured-content">
+            <span class="article-tag">${art.tag}</span>
+            <h2>${art.title}</h2>
+            <p class="article-excerpt">${art.excerpt}</p>
+            <div class="article-meta">
+              <span>${art.date}</span>
+              <span class="dot">•</span>
+              <span>${readTime(art.body)}</span>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="icon-btn edit" onclick="event.stopPropagation(); editArticle(${art.id})" title="Edit">✏️</button>
+            <button class="icon-btn" onclick="event.stopPropagation(); deleteArticle(${art.id})" title="Delete">🗑️</button>
+          </div>`;
+      } else {
+        card.innerHTML = `
+          <span class="article-tag">${art.tag}</span>
+          <h2>${art.title}</h2>
+          <p class="article-excerpt">${art.excerpt}</p>
+          <div class="article-meta">
+            <span>${art.date}</span>
+            <span class="dot">•</span>
+            <span>${readTime(art.body)}</span>
+          </div>
+          <div class="card-actions">
+            <button class="icon-btn edit" onclick="event.stopPropagation(); editArticle(${art.id})" title="Edit">✏️</button>
+            <button class="icon-btn" onclick="event.stopPropagation(); deleteArticle(${art.id})" title="Delete">🗑️</button>
+          </div>`;
+      }
+      card.addEventListener('click', () => openArticle(art.id));
+      grid.appendChild(card);
+    });
+  }
+
+  function filterArticles() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    if (!q) { renderGrid(); return; }
+    const filtered = articles.filter(a =>
+      a.title.toLowerCase().includes(q) ||
+      a.excerpt.toLowerCase().includes(q) ||
+      a.body.toLowerCase().includes(q) ||
+      a.tag.toLowerCase().includes(q)
+    );
+    renderGrid(filtered);
+  }
+
+  function openArticle(id) {
+    const art = articles.find(a => a.id === id);
+    if (!art) return;
+    document.getElementById('viewTag').textContent = art.tag;
+    document.getElementById('viewTitle').textContent = art.title;
+    document.getElementById('viewDate').textContent = art.date;
+    document.getElementById('viewReadTime').textContent = readTime(art.body);
+    document.getElementById('viewBody').textContent = art.body;
+    document.getElementById('homeView').classList.add('hidden');
+    document.getElementById('articleView').classList.add('open');
+    window.scrollTo(0,0);
+  }
+
+  function showHome() {
+    document.getElementById('homeView').classList.remove('hidden');
+    document.getElementById('articleView').classList.remove('open');
+    window.scrollTo(0,0);
+  }
+
+  function openNewArticle() {
+    editingId = null;
+    document.getElementById('modalTitle').textContent = 'Write a new article';
+    document.getElementById('inputTitle').value = '';
+    document.getElementById('inputExcerpt').value = '';
+    document.getElementById('inputBody').value = '';
+    document.getElementById('inputTag').value = 'Thoughts';
+    document.getElementById('editorOverlay').classList.add('open');
+  }
+
+  function editArticle(id) {
+    const art = articles.find(a => a.id === id);
+    if (!art) return;
+    editingId = id;
+    document.getElementById('modalTitle').textContent = 'Edit article';
+    document.getElementById('inputTitle').value = art.title;
+    document.getElementById('inputExcerpt').value = art.excerpt;
+    document.getElementById('inputBody').value = art.body;
+    document.getElementById('inputTag').value = art.tag;
+    document.getElementById('editorOverlay').classList.add('open');
+  }
+
+  function closeEditor() {
+    document.getElementById('editorOverlay').classList.remove('open');
+    editingId = null;
+  }
+
+  function saveArticle() {
+    const title = document.getElementById('inputTitle').value.trim();
+    const excerpt = document.getElementById('inputExcerpt').value.trim();
+    const body = document.getElementById('inputBody').value.trim();
+    const tag = document.getElementById('inputTag').value;
+
+    if (!title) { showToast('Please add a title!'); return; }
+    if (!body) { showToast('Please write some content!'); return; }
+
+    if (editingId) {
+      const idx = articles.findIndex(a => a.id === editingId);
+      if (idx > -1) {
+        articles[idx] = { ...articles[idx], title, excerpt: excerpt || body.substring(0,120) + '…', body, tag };
+        showToast('Article updated ✓');
+      }
+    } else {
+      articles.push({
+        id: Date.now(),
+        title,
+        tag,
+        excerpt: excerpt || body.substring(0,120) + '…',
+        body,
+        date: new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'}),
+        ts: Date.now()
+      });
+      showToast('Article published ✓');
+    }
+
+    save();
+    renderGrid();
+    closeEditor();
+  }
+
+  function deleteArticle(id) {
+    if (!confirm('Delete this article? This cannot be undone.')) return;
+    articles = articles.filter(a => a.id !== id);
+    save();
+    renderGrid();
+    showToast('Article deleted');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  document.getElementById('editorOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeEditor();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeEditor();
+  });
+
+  load();
+</script>
+</body>
+</html>
